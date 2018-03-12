@@ -6,7 +6,7 @@
 use Irssi;
 use vars qw($VERSION %IRSSI);
 
-$VERSION = "dev18.01.17";
+$VERSION = "dev18.03.11";
 %IRSSI = (
     authors	=> "Matt Hielscher",
     contact	=> "matt\@wasabiflux.org", 
