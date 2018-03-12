@@ -12,10 +12,24 @@ $VERSION = "dev18.01.17";
     contact	=> "matt\@wasabiflux.org", 
     name	=> "fold",
     description	=> "Truncate and relocate excessively long messages from specified users.",
-    license	=> "Not for Distribution", # until I choose an actual license and post to GitHub
+    license	=> "MIT", # until I choose an actual license and post to GitHub
     url		=> "https://github.com/mhielscher",
-    changed	=> "2018-01-17T19:37-0800"
+    changed	=> "2018-03-12T11:58-0700"
 );
+
+sub cmd_print_help() {
+  my ($args) = @_;
+  if ($args =~ /^fold(_users)?(_length)? *$/i){
+    my $help = (
+        "/set fold_users <user1> <user2> ...\n".
+        "  Select users to truncate.\n".
+        "/set fold_length <n>\n".
+        "  n = Number of approximate characters to truncate at (word boundaries respected)\n".
+        "\n".
+        "Prints to a window named 'hilight'\n");
+    Irssi::print($help, MSGLEVEL_CLIENTCRAP);
+  }
+}
 
 sub sig_message_public {
     my ($server, $msg, $nick, $address, $target) = @_;
@@ -40,7 +54,9 @@ Irssi::settings_add_str('lookandfeel', 'fold_users', '');
 # default length of an "excessively long" message
 Irssi::settings_add_int('lookandfeel', 'fold_length', 140);
 
-$window = Irssi::window_find_name('hilight');
-Irssi::print("Create a window named 'hilight'") if (!$window);
+$hilightWindow = Irssi::window_find_name('hilight');
+Irssi::print("Creating a window named 'hilight'") if (!$hilightWindow);
+Irssi::Windowitem::window_create("hilight", 2) if (!$hilightWindow);
 
 Irssi::signal_add('message public', 'sig_message_public');
+Irssi::command_bind_last('help', 'cmd_print_help');
